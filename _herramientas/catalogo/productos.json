@@ -28,6 +28,62 @@
   ],
   "productos": [
     {
+      "slug": "quad-atv-polaris-trail-blazer",
+      "nombre": "Quad ATV Polaris Trail Blazer",
+      "subtitulo": "Nueva entrada",
+      "precio": null,
+      "categoria": "quads",
+      "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Polaris Trail Blazer.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/quad-atv-polaris-trail-blazer/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26"
+    },
+    {
+      "slug": "quad-atv-kymco-mxu-250cc-homologado-2-plazas",
+      "nombre": "Quad ATV Kymco MXU 250cc - Homologado 2 Plazas",
+      "subtitulo": "Nueva entrada",
+      "precio": null,
+      "categoria": "quads",
+      "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Kymco MXU 250 cc homologado para 2 plazas.\n\nCaracterísticas destacadas:\n• Kymco MXU 250 cc.\n• Homologado para 2 plazas.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/quad-atv-kymco-mxu-250cc-homologado-2-plazas/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26"
+    },
+    {
+      "slug": "quad-atv-polaris-trail-boss-330cc",
+      "nombre": "Quad ATV Polaris Trail Boss 330cc",
+      "subtitulo": "Recién revisado y con garantía",
+      "precio": null,
+      "categoria": "quads",
+      "descripcion": "¡Disponible en Motos Julio! Quad ATV Polaris Trail Boss 330 cc, recién revisado y con garantía.\n\nCaracterísticas destacadas:\n• Polaris Trail Boss 330 cc.\n• Recién revisado.\n• Con garantía.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/quad-atv-polaris-trail-boss-330cc/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26"
+    },
+    {
+      "slug": "quad-atv-polaris-sportsman-400cc-4x4",
+      "nombre": "Quad ATV Polaris Sportsman 400cc 4x4",
+      "subtitulo": "Para su puesta a punto y venta",
+      "precio": null,
+      "categoria": "quads",
+      "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Polaris Sportsman 400 cc con tracción 4x4, para su puesta a punto y venta.\n\nCaracterísticas destacadas:\n• Polaris Sportsman 400 cc.\n• Tracción 4x4.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/quad-atv-polaris-sportsman-400cc-4x4/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26"
+    },
+    {
       "slug": "patinete-electrico-mascooter",
       "nombre": "Patinete eléctrico Mascooter",
       "subtitulo": "",
@@ -111,7 +167,12 @@
       "categoria": "quads",
       "descripcion": "Aprovecha nuestra promoción especial de Black Friday con cambio de nombre gratuito solo durante esta semana. Quads deportivos totalmente revisados, garantizados y listos para rodar por los terrenos más exigentes. Perfectos para disfrutar de la máxima potencia y diversión off-road.\n\n¿Más información? Llámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlos a nuestra tienda de Miguelturra.",
       "imagenes": [
-        "assets/productos/especial-black-friday-transferencia-incluida/01.webp"
+        "assets/productos/especial-black-friday-transferencia-incluida/01.webp",
+        "assets/productos/especial-black-friday-transferencia-incluida/02.webp",
+        "assets/productos/especial-black-friday-transferencia-incluida/03.webp",
+        "assets/productos/especial-black-friday-transferencia-incluida/04.webp",
+        "assets/productos/especial-black-friday-transferencia-incluida/05.webp",
+        "assets/productos/especial-black-friday-transferencia-incluida/06.webp"
       ],
       "estado": "disponible",
       "origen": "hostinger",
@@ -219,14 +280,15 @@
     },
     {
       "slug": "quad-atv-polaris-sportsman-500cc-4x4-homologado-2-plazas-con-baul",
-      "nombre": "Quad ATV Polaris Sportsman 500cc 4x4 - Homologado 2 Plazas",
+      "nombre": "Quad ATV Polaris Sportsman 500cc 4x4 - Homologado 2 Plazas y Gancho Homologado",
       "subtitulo": "Tracción total AWD, maletín trasero y homologación biplaza",
       "precio": 5900.0,
       "categoria": "quads",
-      "descripcion": "¡Disponible en Motos Julio! Polaris Sportsman 500 H.O. con tracción 4x4, ideal para ocio, rutas y trabajos agrícolas.\n\nHomologado para 2 plazas.\n\nCaracterísticas destacadas:\n• Polaris Sportsman 500 H.O.\n• Motor 500 cc, 4 tiempos.\n• Tracción automática 4x4 (AWD conectable).\n• Homologado para 2 plazas.\n• Baúl trasero con cerradura, parrilla delantera, cubremanos y espejos.\n• Neumáticos todoterreno de gran agarre.\n• Revisado y listo para circular.\n\n¿Por qué confiar en Motos Julio?\n\nRevisamos frenos, suspensiones, niveles, transmisión y sistema eléctrico. Transparencia y asesoramiento especializado.\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo. ¡Pruébalo antes de que se venda!",
+      "descripcion": "¡Disponible en Motos Julio! Polaris Sportsman 500 H.O. con tracción 4x4, ideal para ocio, rutas y trabajos agrícolas.\n\nHomologado para 2 plazas.\n\nCaracterísticas destacadas:\n• Polaris Sportsman 500 H.O.\n• Motor 500 cc, 4 tiempos.\n• Tracción automática 4x4 (AWD conectable).\n• Homologado para 2 plazas.\n• Gancho de remolque homologado.\n• Baúl trasero con cerradura, parrilla delantera, cubremanos y espejos.\n• Neumáticos todoterreno de gran agarre.\n• Revisado y listo para circular.\n\n¿Por qué confiar en Motos Julio?\n\nRevisamos frenos, suspensiones, niveles, transmisión y sistema eléctrico. Transparencia y asesoramiento especializado.\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo. ¡Pruébalo antes de que se venda!",
       "imagenes": [
         "assets/productos/quad-atv-polaris-sportsman-500cc-4x4-homologado-2-plazas-con-baul/01.webp",
-        "assets/productos/quad-atv-polaris-sportsman-500cc-4x4-homologado-2-plazas-con-baul/02.webp"
+        "assets/productos/quad-atv-polaris-sportsman-500cc-4x4-homologado-2-plazas-con-baul/02.webp",
+        "assets/productos/quad-atv-polaris-sportsman-500cc-4x4-homologado-2-plazas-con-baul/03.webp"
       ],
       "estado": "disponible",
       "origen": "hostinger",
@@ -238,7 +300,7 @@
       "subtitulo": "Chasis rojo, estética exclusiva, totalmente revisado y garantizado",
       "precio": 5800.0,
       "categoria": "quads",
-      "descripcion": "¡Exclusividad en Motos Julio! Ponemos a la venta este quad deportivo Suzuki LTZ 400 cc Edición Limitada, caracterizado por su estética agresiva con carrocería en color negro, asiento deportivo rojo y chasis a juego. Un modelo mítico, potente y sumamente fiable, ideal para quienes buscan el máximo rendimiento y un diseño diferenciador en pista o campo.\nSe entrega recién revisado por completo en nuestro taller y con garantía incluida.\n\nCaracterísticas destacadas:\n• Marca y modelo: Suzuki LTZ 400 (Quadsport) Edición Limitada.\n• Motor: 400 cc 4 tiempos, refrigeración líquida y marcha atrás, con excelente empuje y respuesta inmediata.\n• Diseño exclusivo: Plásticos negros originales, asiento bicolor en rojo y chasis tubular reforzado en color rojo.\n• Equipamiento: Paramanos deportivos, defensas laterales (nerf bars) y amortiguación delantera regulable con muelles a contraste.\n• Neumáticos de tacos todoterreno en muy buen estado de tracción.\n• Estado: Puesta a punto completa en taller oficial Motos Julio y garantía incluida.\n\n¿Por qué confiar en Motos Julio?\nEn Motos Julio revisamos exhaustivamente cada vehículo de ocasión antes de su entrega: compresión del motor, circuito de frenos, holguras de trapecios y suspensiones. Te aseguramos un vehículo listo para disfrutar sin sorpresas.\n\nInformación y citas:\nPide más detalles o consulta el precio llamando o enviando un mensaje de WhatsApp al teléfono 607 749 877, o visítanos directamente en nuestra tienda. ¡Ven a verlo antes de que vuele!",
+      "descripcion": "¡Exclusividad en Motos Julio! Ponemos a la venta este quad deportivo Suzuki LTZ 400 cc Edición Limitada, caracterizado por su estética agresiva con carrocería en color negro, asiento deportivo rojo y chasis a juego. Un modelo mítico, potente y sumamente fiable, ideal para quienes buscan el máximo rendimiento y un diseño diferenciador en pista o campo.\nSe entrega recién revisado por completo en nuestro taller y con garantía incluida.\n\nCaracterísticas destacadas:\n• Marca y modelo: Suzuki LTZ 400 (Quadsport) Edición Limitada.\n• Año: 2006.\n• Motor: 400 cc 4 tiempos, refrigeración líquida y marcha atrás, con excelente empuje y respuesta inmediata.\n• Diseño exclusivo: Plásticos negros originales, asiento bicolor en rojo y chasis tubular reforzado en color rojo.\n• Equipamiento: Paramanos deportivos, defensas laterales (nerf bars) y amortiguación delantera regulable con muelles a contraste.\n• Neumáticos de tacos todoterreno en muy buen estado de tracción.\n• Estado: Puesta a punto completa en taller oficial Motos Julio y garantía incluida.\n\n¿Por qué confiar en Motos Julio?\nEn Motos Julio revisamos exhaustivamente cada vehículo de ocasión antes de su entrega: compresión del motor, circuito de frenos, holguras de trapecios y suspensiones. Te aseguramos un vehículo listo para disfrutar sin sorpresas.\n\nInformación y citas:\nPide más detalles o consulta el precio llamando o enviando un mensaje de WhatsApp al teléfono 607 749 877, o visítanos directamente en nuestra tienda. ¡Ven a verlo antes de que vuele!",
       "imagenes": [
         "assets/productos/quad-deportivo-suzuki-ltz-400-cc-edicion-limitada-revisado-y-con-garantia/01.webp"
       ],
@@ -263,7 +325,7 @@
     {
       "slug": "alquiler-de-remolque-plataforma-para-motos-quads-y-cargas",
       "nombre": "Alquiler de Remolque Plataforma para Motos, Quads y Cargas",
-      "subtitulo": "Remolques homologados, seguros y resistentes para tu transporte",
+      "subtitulo": "55 € al día · Remolques homologados, seguros y resistentes",
       "precio": 55.0,
       "categoria": "otros",
       "descripcion": "¿Necesitas transportar una moto, quad o maquinaria pequeña? Alquila un carro plataforma resistente en Motos Julio.\nPlataforma amplia, suelo reforzado y puntos de amarre para cargar y sujetar tu carga con seguridad.\n\nVentajas del servicio:\n• Uso versátil: motos, quads, ATV y transporte general.\n• Estructura robusta, barandillas y pasarelas antideslizantes.\n• Fácil acople y cadena de seguridad.\n• Alquiler por horas, días o fines de semana (consultar condiciones).\n• Documentación al día y remolque revisado.\n\n¿Por qué alquilar en Motos Julio?\nRevisamos neumáticos y luces antes de cada entrega y te asesoramos sobre cómo sujetar la carga.\n\nReserva y disponibilidad:\nConsulta precios y disponibilidad por WhatsApp o teléfono en el 607 749 877, o visítanos. ¡Reserva tu remolque!",
