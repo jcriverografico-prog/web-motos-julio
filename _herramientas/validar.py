@@ -86,6 +86,12 @@ def validar_web(out, data):
             errores.append(f'web: la ficha de {p["slug"]} no tiene botón de llamada')
         if f'{p["precio"]:.2f}' not in s:
             errores.append(f'web: la ficha de {p["slug"]} no muestra el precio')
+        og = re.search(r'<meta[^>]*property="og:url"[^>]*content="([^"]+)"', s) or re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:url"', s)
+        if not og or not og.group(1).endswith('/' + p['slug']):
+            errores.append(f'web: la ficha de {p["slug"]} tiene og:url incorrecto')
+        for otro in activos:
+            if otro is not p and f'{otro["nombre"]} | Motos Julio' in s and otro['nombre'] != p['nombre']:
+                errores.append(f'web: la ficha de {p["slug"]} contiene metadatos de «{otro["slug"]}»')
     tienda = open(os.path.join(out, 'tienda', 'index.html'), encoding='utf-8').read()
     n = tienda.count('class="mj-card"')
     if n != len(activos):
@@ -97,6 +103,8 @@ def validar_web(out, data):
                 continue
             page = os.path.join(dirpath, fn)
             s = open(page, encoding='utf-8').read()
+            if 'zyrosite.com' in s or 'hostinger.com' in s:
+                errores.append(f'web: {os.path.relpath(page, out)} aún depende de Hostinger (zyrosite/hostinger)')
             for attr, url in re.findall(r'(href|src|data-full|data-src)="([^"#?]+)', s):
                 if url.startswith(('http', 'mailto:', 'tel:', 'data:', '//')) or url.endswith('.php'):
                     continue

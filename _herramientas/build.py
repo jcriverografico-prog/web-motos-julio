@@ -332,6 +332,15 @@ TEMPLATE = TEMPLATE.replace('item-content-wrapper--active ', '')
 SITE = 'https://www.motosjulio.es'
 
 
+def set_meta(s, key, val):
+    attr = 'property' if key.startswith('og:') else 'name'
+    tag = f'<meta {attr}="{key}" content="{html.escape(val, quote=True)}">'
+    pat = re.compile(r'<meta\b[^>]*\b(?:name|property)="' + re.escape(key) + r'"[^>]*>')
+    if pat.search(s):
+        return pat.sub(lambda m: tag, s, count=1)
+    return s.replace('</head>', tag + '</head>', 1)
+
+
 def render_product(p):
     s = TEMPLATE
     name = html.escape(p['nombre'])
@@ -340,12 +349,14 @@ def render_product(p):
     desc = html.escape((first[:152] + '…') if len(first) > 155 else first)
     title = f'{name} | Motos Julio'
     s = re.sub(r'<title>[^<]*</title>', f'<title>{title}</title>', s)
-    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)?title" content=")[^"]*', lambda m: m.group(1) + title, s)
-    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)?description" content=")[^"]*', lambda m: m.group(1) + desc, s)
-    s = re.sub(r'(<link rel="canonical" href=")[^"]*', lambda m: m.group(1) + f'{SITE}/{p["slug"]}', s)
-    s = re.sub(r'(<meta property="og:url" content=")[^"]*', lambda m: m.group(1) + f'{SITE}/{p["slug"]}', s)
     first_img = p['imagenes'][0] if p['imagenes'][0].startswith('http') else f'{SITE}/{p["imagenes"][0]}'
-    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)image(?::url)?" content=")[^"]*', lambda m: m.group(1) + first_img, s)
+    url = f'{SITE}/{p["slug"]}'
+    for key, val in [('description', desc), ('og:title', title), ('twitter:title', title),
+                     ('og:description', desc), ('twitter:description', desc), ('og:url', url),
+                     ('og:image', first_img), ('twitter:image', first_img),
+                     ('og:image:alt', name), ('twitter:image:alt', name)]:
+        s = set_meta(s, key, val)
+    s = re.sub(r'(<link rel="canonical" href=")[^"]*', lambda m: m.group(1) + url, s)
     ld = {'@context': 'https://schema.org', '@type': 'Product', 'name': p['nombre'],
           'description': first, 'image': [u if u.startswith('http') else f'{SITE}/{u}' for u in p['imagenes']],
           'category': CAT_NAMES.get(cat_id, ''), 'url': f'{SITE}/{p["slug"]}',
