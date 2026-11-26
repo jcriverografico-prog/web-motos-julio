@@ -84,6 +84,8 @@ CATALOGO = json.load(open(os.path.join(HERE, 'catalogo', 'productos.json'), enco
 CATEGORIES = [(c['id'], c['nombre']) for c in CATALOGO['categorias'] if not c.get('oculta')]
 CAT_NAMES = {c['id']: c['nombre'] for c in CATALOGO['categorias']}
 products = [p for p in CATALOGO['productos'] if p.get('estado') != 'baja']
+# los fijados (p. ej. campañas) van siempre primero, en su orden; luego el resto
+products = [p for p in products if p.get('fijado')] + [p for p in products if not p.get('fijado')]
 for i, p in enumerate(products):
     p['order'] = i
 TEL = '+34607749877'
@@ -99,7 +101,7 @@ CAT_PAGE = {'bicicletas': 'bicicletas', 'patines': 'patines', 'desguace': 'desgu
 
 
 def fmt_price(v):
-    return '€' + f'{v:.2f}'
+    return 'Consultar precio' if v is None else '€' + f'{v:.2f}'
 
 
 def img_url(path, depth, thumb=False):
@@ -114,7 +116,7 @@ def img_url(path, depth, thumb=False):
 
 
 def badge_for(p):
-    return {'agotado': 'Agotado', 'vendido': 'Vendido', 'reservado': 'Reservado'}.get(p.get('estado', ''), '')
+    return {'agotado': 'Agotado', 'vendido': 'Vendido', 'reservado': 'Reservado'}.get(p.get('estado', ''), '') or p.get('etiqueta', '')
 
 
 def product_grid(default, depth):
@@ -133,10 +135,10 @@ def product_grid(default, depth):
         show = wanted is None or p['categoria'] in wanted
         visible += show
         b = badge_for(p)
-        badge = f'<span class="mj-badge">{b}</span>' if b else ''
+        badge = f'<span class="mj-badge{" mj-badge--promo" if b and b == p.get("etiqueta") else ""}">{html.escape(b)}</span>' if b else ''
         cards.append(
-            f'<a class="mj-card" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["categoria"]}" data-price="{p["precio"]}" '
-            f'data-order="{p["order"]}" data-name="{html.escape(p["nombre"].lower())}"{"" if show else " hidden"}>'
+            f'<a class="mj-card{" mj-card--fijado" if p.get("fijado") else ""}" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["categoria"]}" data-price="{"" if p["precio"] is None else p["precio"]}" '
+            f'data-order="{p["order"]}" data-pinned="{1 if p.get("fijado") else 0}" data-name="{html.escape(p["nombre"].lower())}"{"" if show else " hidden"}>'
             f'<span class="mj-card__img">{badge}<img src="{img_url(p["imagenes"][0], depth, True)}" alt="{html.escape(p["nombre"])}" loading="lazy"></span>'
             f'<h6 class="mj-card__title">{html.escape(p["nombre"])}</h6>'
             f'<p class="mj-card__price">{fmt_price(p["precio"])}</p></a>')
@@ -360,8 +362,10 @@ def render_product(p):
     ld = {'@context': 'https://schema.org', '@type': 'Product', 'name': p['nombre'],
           'description': first, 'image': [u if u.startswith('http') else f'{SITE}/{u}' for u in p['imagenes']],
           'category': CAT_NAMES.get(cat_id, ''), 'url': f'{SITE}/{p["slug"]}',
-          'offers': {'@type': 'Offer', 'price': f'{p["precio"]:.2f}', 'priceCurrency': 'EUR', 'itemCondition': 'https://schema.org/UsedCondition',
+          'offers': {'@type': 'Offer', 'priceCurrency': 'EUR', 'itemCondition': 'https://schema.org/UsedCondition',
                      'availability': 'https://schema.org/' + ('InStock' if p.get('estado', 'disponible') == 'disponible' else 'OutOfStock')}}
+    if p['precio'] is not None:
+        ld['offers']['price'] = f'{p["precio"]:.2f}'
     s = re.sub(r'<script type="application/ld\+json">.*?</script>', '', s, flags=re.S)
     s = s.replace('</head>', '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + '</script></head>', 1)
     # galería
@@ -377,7 +381,7 @@ def render_product(p):
     sub = html.escape(p.get('subtitulo', ''))
     s = re.sub(r'(<h2 class="block-product__subtitle"[^>]*>).*?(</h2>)', (lambda m: m.group(1) + sub + m.group(2)) if sub else '', s, count=1, flags=re.S)
     b = badge_for(p)
-    price = fmt_price(p['precio']) + (f' <span class="mj-badge mj-badge--inline">{b}</span>' if b else '')
+    price = fmt_price(p['precio']) + (f' <span class="mj-badge mj-badge--inline{" mj-badge--promo" if b == p.get("etiqueta") else ""}">{html.escape(b)}</span>' if b else '')
     s = re.sub(r'(<span class="block-product__price[^"]*"[^>]*>).*?(</span>)', lambda m: m.group(1) + price + m.group(2), s, count=1, flags=re.S)
     s = re.sub(r'(<div class="block-product__description[^"]*"[^>]*>).*?(</div>)', lambda m: m.group(1) + description_html(p['descripcion']) + m.group(2), s, count=1, flags=re.S)
     s = s.replace('../plantilla/', f'../{p["slug"]}/')

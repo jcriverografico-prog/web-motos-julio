@@ -103,3 +103,4 @@ html:not(.mj-js) .transition,html:not(.mj-js) [data-animation-role]{opacity:1!im
 @media (min-width:921px){
   #z3UMuY .layout-element:has(> .layout-element__component--GridForm){height:487px;align-self:start;overflow:visible}
 }
+.mj-badge--promo{background:rgb(255,36,47)}

@@ -22,6 +22,8 @@ def validar_catalogo():
     for i, p in enumerate(data['productos']):
         ref = p.get('slug') or f'producto #{i + 1}'
         for campo in ('slug', 'nombre', 'precio', 'categoria', 'descripcion', 'imagenes', 'estado'):
+            if campo == 'precio' and campo in p and p[campo] is None:
+                continue  # «Consultar precio»
             if campo not in p or p[campo] in ('', None, []):
                 errores.append(f'{ref}: falta «{campo}»')
         if errores and errores[-1].startswith(ref + ': falta'):
@@ -31,7 +33,9 @@ def validar_catalogo():
         if p['slug'] in vistos:
             errores.append(f'{ref}: slug repetido')
         vistos.add(p['slug'])
-        if not isinstance(p['precio'], (int, float)) or p['precio'] <= 0:
+        if p['precio'] is None:
+            avisos.append(f'{ref}: sin precio (se mostrará «Consultar precio»)')
+        elif not isinstance(p['precio'], (int, float)) or p['precio'] <= 0:
             errores.append(f'{ref}: precio no válido ({p["precio"]!r})')
         elif p['precio'] > 50000:
             avisos.append(f'{ref}: precio muy alto ({p["precio"]} €), revísalo')
@@ -84,7 +88,7 @@ def validar_web(out, data):
         s = open(f, encoding='utf-8').read()
         if 'tel:+34607749877' not in s:
             errores.append(f'web: la ficha de {p["slug"]} no tiene botón de llamada')
-        if f'{p["precio"]:.2f}' not in s:
+        if (f'{p["precio"]:.2f}' if p['precio'] is not None else 'Consultar precio') not in s:
             errores.append(f'web: la ficha de {p["slug"]} no muestra el precio')
         og = re.search(r'<meta[^>]*property="og:url"[^>]*content="([^"]+)"', s) or re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:url"', s)
         if not og or not og.group(1).endswith('/' + p['slug']):
@@ -93,7 +97,7 @@ def validar_web(out, data):
             if otro is not p and f'{otro["nombre"]} | Motos Julio' in s and otro['nombre'] != p['nombre']:
                 errores.append(f'web: la ficha de {p["slug"]} contiene metadatos de «{otro["slug"]}»')
     tienda = open(os.path.join(out, 'tienda', 'index.html'), encoding='utf-8').read()
-    n = tienda.count('class="mj-card"')
+    n = len(re.findall(r'class="mj-card[ "]', tienda))
     if n != len(activos):
         errores.append(f'web: la tienda muestra {n} productos y el catálogo tiene {len(activos)}')
     # enlaces e imágenes locales rotos en todas las páginas

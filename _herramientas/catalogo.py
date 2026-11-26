@@ -4,6 +4,7 @@
   alta FICHA.json [--simular] [--forzar]  Da de alta un producto (ver formato abajo).
   estado SLUG ESTADO                      disponible | reservado | vendido | agotado
   baja SLUG                               Lo quita de la web (se conserva en el registro).
+  fijar SLUG / soltar SLUG                Fija (o suelta) un producto al principio de la tienda.
   contador                                Productos subidos, lotes de 30 y importe.
   cobrado N                               Marca N lotes como cobrados.
   lista                                   Lista el catálogo.
@@ -16,7 +17,10 @@ FICHA.json (una por producto):
   "categoria": "quads",                              bicicletas | desguace | motos | patines | quads | otros
   "descripcion": "Línea 1\\nLínea 2\\n\\n• Punto",
   "imagenes": ["/ruta/foto1.jpg", "/ruta/foto2.jpg"], (la primera es la portada)
-  "estado": "disponible"                             (opcional)
+  "estado": "disponible",                            (opcional)
+  "etiqueta": "Black Friday",                        (opcional: cinta sobre la foto)
+  "fijado": true                                     (opcional: siempre el primero de la tienda)
+  Precio desconocido a propósito: "precio": "consultar"  -> «Consultar precio»
 }
 """
 import csv, datetime, json, os, re, sys, unicodedata
@@ -100,15 +104,15 @@ def alta(ficha_path, simular=False, forzar=False):
     cats = {c['id'] for c in data['categorias']}
     errores = []
     for campo in ('nombre', 'precio', 'categoria', 'descripcion', 'imagenes'):
-        if not f.get(campo):
+        if not f.get(campo) and not (campo == 'precio' and str(f.get('precio')).lower() == 'consultar'):
             errores.append(f'falta «{campo}»')
     if errores:
         fallo('; '.join(errores))
     try:
-        precio = leer_precio(f['precio'])
+        precio = None if str(f['precio']).lower() == 'consultar' else leer_precio(f['precio'])
     except ValueError:
         fallo(f'precio no válido: {f["precio"]!r}')
-    if precio <= 0:
+    if precio is not None and precio <= 0:
         fallo('el precio debe ser mayor que 0')
     if f['categoria'] not in cats:
         fallo(f'categoría «{f["categoria"]}» no existe ({", ".join(sorted(cats))})')
@@ -147,7 +151,7 @@ def alta(ficha_path, simular=False, forzar=False):
     rutas = [f'assets/productos/{slug}/{i + 1:02d}.webp' for i in range(len(f['imagenes']))]
     producto = {
         'slug': slug, 'nombre': f['nombre'].strip(), 'subtitulo': f.get('subtitulo', '').strip(),
-        'precio': round(precio, 2), 'categoria': f['categoria'], 'descripcion': f['descripcion'].strip(),
+        'precio': None if precio is None else round(precio, 2), 'categoria': f['categoria'], 'descripcion': f['descripcion'].strip(),
         'imagenes': rutas, 'estado': estado, 'origen': 'nuevo',
         'alta': datetime.date.today().isoformat(),
     }
@@ -165,7 +169,10 @@ def alta(ficha_path, simular=False, forzar=False):
         mini = img.copy(); mini.thumbnail((MINI, MINI * 2), Image.LANCZOS)
         mini.save(os.path.join(ROOT, destino.replace('.webp', '-600.webp')), 'WEBP', quality=78, method=6)
 
-    data['productos'].insert(0, producto)  # el más reciente, primero
+    for k in ('etiqueta', 'fijado'):
+        if f.get(k):
+            producto[k] = f[k]
+    data['productos'].insert(0, producto)  # el más reciente, primero (los fijados se ordenan solos al publicar)
     guardar(data)
     nuevo = not os.path.exists(REGISTRO)
     with open(REGISTRO, 'a', encoding='utf-8', newline='') as fh:
@@ -187,6 +194,19 @@ def cambiar_estado(slug, estado):
     p['estado'] = estado
     guardar(data)
     print(f'{slug}: {estado}')
+
+
+def fijar(slug, valor):
+    data = cargar()
+    p = next((p for p in data['productos'] if p['slug'] == slug), None)
+    if not p:
+        fallo(f'no existe el producto {slug}')
+    if valor:
+        p['fijado'] = True
+    else:
+        p.pop('fijado', None)
+    guardar(data)
+    print(f'{slug}: {"fijado" if valor else "sin fijar"}')
 
 
 def contador():
@@ -219,7 +239,8 @@ def cobrado(n):
 
 def lista():
     for p in cargar()['productos']:
-        print(f'{p["estado"]:<11} {p["categoria"]:<11} {p["precio"]:>9.2f} €  {p["slug"]}')
+        pr = 'consultar' if p['precio'] is None else f'{p["precio"]:.2f} €'
+        print(f'{"📌 " if p.get("fijado") else "   "}{p["estado"]:<11} {p["categoria"]:<11} {pr:>12}  {p["slug"]}')
 
 
 if __name__ == '__main__':
@@ -233,6 +254,8 @@ if __name__ == '__main__':
         cambiar_estado(a[1], a[2])
     elif cmd == 'baja' and len(a) == 2:
         cambiar_estado(a[1], 'baja')
+    elif cmd in ('fijar', 'soltar') and len(a) == 2:
+        fijar(a[1], cmd == 'fijar')
     elif cmd == 'contador':
         contador()
     elif cmd == 'cobrado' and len(a) == 2:

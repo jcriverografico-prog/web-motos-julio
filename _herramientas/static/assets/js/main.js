@@ -34,6 +34,8 @@
       cards.forEach(function (c) { var ok = !cats || cats.indexOf(c.dataset.cat) > -1; c.hidden = !ok; if (ok) n++; });
       var s = sortSel.value;
       cards.slice().sort(function (a, b) {
+        if (a.dataset.pinned !== b.dataset.pinned) return b.dataset.pinned - a.dataset.pinned;
+        if ((s === 'precio-asc' || s === 'precio-desc') && (a.dataset.price === '' || b.dataset.price === '')) return (a.dataset.price === '') - (b.dataset.price === '');
         if (s === 'precio-asc') return a.dataset.price - b.dataset.price;
         if (s === 'precio-desc') return b.dataset.price - a.dataset.price;
         if (s === 'nombre') return a.dataset.name.localeCompare(b.dataset.name, 'es');
