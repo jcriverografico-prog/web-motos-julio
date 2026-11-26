@@ -81,7 +81,7 @@
     var main = car.querySelector('.product-carousel__main-image');
     var thumbs = Array.prototype.slice.call(car.querySelectorAll('.product-carousel__image-list-element'));
     var dots = Array.prototype.slice.call(car.querySelectorAll('.product-carousel__dot'));
-    var srcs = thumbs.map(function (t) { var i = t.querySelector('img'); return i && i.getAttribute('src'); }).filter(Boolean);
+    var srcs = thumbs.map(function (t) { var i = t.querySelector('img'); return i && (i.getAttribute('data-full') || i.getAttribute('src')); }).filter(Boolean);
     if (!main || srcs.length < 2) {
       car.querySelectorAll('.product-carousel__slider-button, .product-carousel__dots-wrapper').forEach(function (e) { e.style.display = 'none'; });
       return;

@@ -91,3 +91,12 @@ html:not(.mj-js) .transition,html:not(.mj-js) [data-animation-role]{opacity:1!im
   #z-nrvp .layout-element:has(#z6M5H3){order:5}
   #z-nrvp .layout-element:has(#zCbui9){order:6}
 }
+
+/* ---------- Ficha: miga de pan y estado ---------- */
+.mj-breadcrumb{font-family:Inter,sans-serif;font-size:14px;color:#6d7081;margin:0 0 12px;display:flex;gap:8px;flex-wrap:wrap}
+.mj-breadcrumb a{color:inherit;text-decoration:none}
+.mj-breadcrumb a:hover{color:rgb(255,36,47)}
+.mj-badge--inline{position:static;display:inline-block;margin-left:12px;vertical-align:middle}
+.product-content-layout__gallery{flex:0 1 600px;width:100%;max-width:600px;min-width:0}
+.product-carousel__image-list > div{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:920px){.product-content-layout__gallery{max-width:none;flex-basis:auto}}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera la réplica estática de motosjulio.es a partir del HTML descargado.
 
-Uso: python3 build.py SRC_DIR OUT_DIR
+Uso: python3 build.py OUT_DIR   (mejor: python3 publicar.py)
 - Quita el JavaScript de Hostinger (Astro/Vue, analítica).
 - Descarga a local las imágenes de assets.zyrosite.com y el CSS.
 - Reconstruye los listados de la tienda (en el original se cargan por JS).
@@ -10,7 +10,9 @@ Uso: python3 build.py SRC_DIR OUT_DIR
 import hashlib, html, json, os, re, subprocess, sys
 from urllib.parse import unquote
 
-SRC, OUT = sys.argv[1], sys.argv[2]
+HERE = os.path.dirname(os.path.abspath(__file__))
+SRC = os.path.join(HERE, 'src')
+OUT = sys.argv[1]
 IMG_DIR = os.path.join(OUT, 'assets', 'img')
 os.makedirs(IMG_DIR, exist_ok=True)
 os.makedirs(os.path.join(OUT, 'assets', 'css'), exist_ok=True)
@@ -21,8 +23,7 @@ PAGES = {  # fichero fuente -> slug de salida ('' = portada)
     'desguace-de-motos.html': 'desguace-de-motos', 'bicicletas.html': 'bicicletas', 'patines.html': 'patines',
     'contacto.html': 'contacto',
 }
-for f in sorted(os.listdir(os.path.join(SRC, 'prod'))):
-    PAGES['prod/' + f] = f[:-5]
+PLANTILLA_PRODUCTO = 'prod/adly-300.html'  # cabecera, pie y estilos de ficha
 
 import legal
 
@@ -77,57 +78,15 @@ def rel(path, depth):
     return prefix + p if p else prefix
 
 
-# ---------- productos ----------
-# Categorías de la tienda original (Hostinger). La asignación se deduce del nombre;
-# para corregir un producto, añádelo a CATEGORY_OVERRIDES con su slug.
-CATEGORIES = [('bicicletas', 'Bicicletas'), ('desguace', 'Desguace de motos'), ('motos', 'Motos'),
-              ('patines', 'Patines'), ('quads', 'Quads')]
-CATEGORY_OVERRIDES = {}
-
-
-def category_of(name):
-    low = name.lower()
-    if 'remolque' in low:
-        return ''
-    if 'bici' in low:
-        return 'bicicletas'
-    if 'patin' in low:
-        return 'patines'
-    if any(k in low for k in ('quad', 'atv', 'polaris', 'ltz', 'adly')):
-        return 'quads'
-    if any(k in low for k in ('vespa', 'moto', 'scooter', 'yamaha', 'honda', 'piaggio')):
-        return 'motos'
-    return ''
-
-products = []
-for src, slug in PAGES.items():
-    if not src.startswith('prod/'):
-        continue
-    s = open(os.path.join(SRC, src), encoding='utf-8').read()
-    ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">(.*?)</script>', s, re.S)]
-    p = next((x for x in ld if isinstance(x, dict) and x.get('@type') == 'Product'), None)
-    if not p:
-        continue
-    offer = p['offers'][0] if isinstance(p['offers'], list) else p['offers']
-    name = p['name'].strip()
-    low = name.lower()
-    cat = category_of(name)
-    products.append({'slug': slug, 'name': name, 'price': float(offer['price']),
-                     'stock': offer.get('availability', '').endswith('InStock'),
-                     'image': p['image'] if isinstance(p['image'], str) else p['image'][0], 'cat': cat})
-# mismo orden en que Hostinger lista las páginas de producto
-src_props = html.unescape(open(os.path.join(SRC, 'tienda.html'), encoding='utf-8').read())
-slug_order = []
-for m in re.finditer(r'"prod_[0-9A-Z]+":\[0,\{', src_props):
-    sm = re.search(r'"slug":\[0,"([^"]+)"', src_props[m.end():m.end() + 3000])
-    if sm:
-        slug_order.append(sm.group(1))
-pos = {s: i for i, s in enumerate(dict.fromkeys(slug_order))}
-products.sort(key=lambda p: pos.get(p['slug'], 999))
+# ---------- productos (fuente: catalogo/productos.json) ----------
+ROOT = os.path.dirname(HERE)
+CATALOGO = json.load(open(os.path.join(HERE, 'catalogo', 'productos.json'), encoding='utf-8'))
+CATEGORIES = [(c['id'], c['nombre']) for c in CATALOGO['categorias'] if not c.get('oculta')]
+CAT_NAMES = {c['id']: c['nombre'] for c in CATALOGO['categorias']}
+products = [p for p in CATALOGO['productos'] if p.get('estado') != 'baja']
 for i, p in enumerate(products):
-    p['cat'] = CATEGORY_OVERRIDES.get(p['slug'], p['cat'])
     p['order'] = i
-json.dump(products, open(os.path.join(OUT, 'assets', 'productos.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+TEL = '+34607749877'
 
 LISTS = {  # página -> categoría que muestra por defecto ('' = todas)
     'tienda': '',
@@ -136,10 +95,26 @@ LISTS = {  # página -> categoría que muestra por defecto ('' = todas)
     'patines': 'patines',
     'desguace-de-motos': 'desguace',
 }
+CAT_PAGE = {'bicicletas': 'bicicletas', 'patines': 'patines', 'desguace': 'desguace-de-motos'}
 
 
 def fmt_price(v):
     return '€' + f'{v:.2f}'
+
+
+def img_url(path, depth, thumb=False):
+    """Ruta pública de una imagen del catálogo (URL remota o ruta del repo)."""
+    if path.startswith('http'):
+        return path
+    if thumb:
+        t = re.sub(r'\.webp$', '-600.webp', path)
+        if os.path.exists(os.path.join(ROOT, t)):
+            path = t
+    return rel('/' + path, depth)
+
+
+def badge_for(p):
+    return {'agotado': 'Agotado', 'vendido': 'Vendido', 'reservado': 'Reservado'}.get(p.get('estado', ''), '')
 
 
 def product_grid(default, depth):
@@ -155,18 +130,16 @@ def product_grid(default, depth):
         ('precio-desc', 'Precio: de mayor a menor'), ('nombre', 'Nombre: de la A a la Z')])
     cards, visible = [], 0
     for p in products:
-        img = local_image(p['image'])
-        if img.startswith('/'):
-            img = rel(img, depth)
-        show = wanted is None or p['cat'] in wanted
+        show = wanted is None or p['categoria'] in wanted
         visible += show
-        badge = '' if p['stock'] else '<span class="mj-badge">Agotado</span>'
+        b = badge_for(p)
+        badge = f'<span class="mj-badge">{b}</span>' if b else ''
         cards.append(
-            f'<a class="mj-card" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["cat"]}" data-price="{p["price"]}" '
-            f'data-order="{p["order"]}" data-name="{html.escape(p["name"].lower())}"{"" if show else " hidden"}>'
-            f'<span class="mj-card__img">{badge}<img src="{img}" alt="{html.escape(p["name"])}" loading="lazy"></span>'
-            f'<h6 class="mj-card__title">{html.escape(p["name"])}</h6>'
-            f'<p class="mj-card__price">{fmt_price(p["price"])}</p></a>')
+            f'<a class="mj-card" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["categoria"]}" data-price="{p["precio"]}" '
+            f'data-order="{p["order"]}" data-name="{html.escape(p["nombre"].lower())}"{"" if show else " hidden"}>'
+            f'<span class="mj-card__img">{badge}<img src="{img_url(p["imagenes"][0], depth, True)}" alt="{html.escape(p["nombre"])}" loading="lazy"></span>'
+            f'<h6 class="mj-card__title">{html.escape(p["nombre"])}</h6>'
+            f'<p class="mj-card__price">{fmt_price(p["precio"])}</p></a>')
     return (f'<div class="mj-shop" data-default="{default}">'
             f'<div class="mj-toolbar">'
             f'<label class="mj-field"><span class="mj-field__label">Navegar por:</span><span class="mj-select"><select data-mj-cat aria-label="Categoría">{opts}</select></span></label>'
@@ -175,8 +148,35 @@ def product_grid(default, depth):
             f'<p class="mj-count" data-mj-count>{visible} {"producto" if visible == 1 else "productos"}</p>'
             f'<div class="mj-grid">{"".join(cards)}</div>'
             f'<div class="mj-empty"{"" if visible == 0 else " hidden"}><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="8" fill="currentColor" fill-opacity="0.08"/></svg>'
-            f'<h6>No hay productos disponibles</h6><p>Llámanos al <a href="tel:+34607749877">607 749 877</a> y te informamos.</p></div>'
+            f'<h6>No hay productos disponibles</h6><p>Llámanos al <a href="tel:{TEL}">607 749 877</a> y te informamos.</p></div>'
             f'</div>')
+
+
+def description_html(text):
+    out = []
+    for line in text.split('\n'):
+        line = line.strip()
+        out.append(f'<p>{html.escape(line)}</p>' if line else '<p></p>')
+    return ''.join(out)
+
+
+def gallery_html(p, depth):
+    imgs = p['imagenes']
+    alt = html.escape(p['nombre'])
+    main = img_url(imgs[0], depth)
+    arrows = ('<button class="product-carousel__slider-button product-carousel__slider-button--left" aria-label="Foto anterior"><span class="product-carousel__arrow product-carousel__arrow--left"></span></button>'
+              '<button class="product-carousel__slider-button product-carousel__slider-button--right" aria-label="Foto siguiente"><span class="product-carousel__arrow product-carousel__arrow--right"></span></button>') if len(imgs) > 1 else ''
+    thumbs = ''.join(
+        f'<button class="{"product-carousel__image-list-element--active " if i == 0 else ""}product-carousel__image-list-element" aria-label="Foto {i + 1}">'
+        f'<img class="product-carousel__image ecommerce-product-image" style="object-fit:cover;" loading="lazy" src="{img_url(u, depth, True)}" data-full="{img_url(u, depth)}" alt="{alt} - foto {i + 1}" width="64" height="64"></button>'
+        for i, u in enumerate(imgs))
+    dots = ''.join(f'<button class="product-carousel__dot-button" aria-label="Foto {i + 1}"><span class="{"product-carousel__dot--active " if i == 0 else ""}product-carousel__dot"></span></button>' for i in range(len(imgs)))
+    lists = (f'<div class="product-carousel__image-list"><div class="">{thumbs}</div></div>'
+             f'<div class="product-carousel__dots-wrapper">{dots}</div>') if len(imgs) > 1 else ''
+    return ('<div class="product-content-layout__gallery"><div class="product-carousel" style="--image-max-width:600px;--image-max-width-small:64px;--image-object-fit:cover;--image-border-radius:0%;--arrow-color:rgb(0, 0, 0);--thumbnail-arrow-color:rgb(0, 0, 0);">'
+            f'<div class="product-carousel__image-wrapper product-carousel__image-wrapper--portrait">{arrows}'
+            f'<img class="product-carousel__image product-carousel__main-image ecommerce-product-image" style="object-fit:cover;" loading="eager" src="{main}" alt="{alt}" width="600" height="800"></div>'
+            f'{lists}</div></div>')
 
 
 def balanced_end(s, start, tag):
@@ -307,13 +307,74 @@ def process(src, slug):
     # 11) JS propio
     s = s.replace('</body>', f'<script src="{rel("/assets/js/main.js", depth)}" defer></script></body>')
     s = s.replace('<head>', "<head><script>document.documentElement.classList.add('mj-js')</script>", 1)
+    return s
+
+
+def write_page(slug, s):
     dest = os.path.join(OUT, slug, 'index.html') if slug else os.path.join(OUT, 'index.html')
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     open(dest, 'w', encoding='utf-8').write(s)
 
 
 for src, slug in PAGES.items():
-    process(src, slug)
+    write_page(slug, process(src, slug))
+
+
+# ---------- fichas de producto (desde el catálogo) ----------
+def replace_block(s, marker, new):
+    i = s.find(marker)
+    i = s.rfind('<div', 0, i + 1)
+    return s[:i] + new + s[balanced_end(s, i, 'div'):]
+
+
+TEMPLATE = process(PLANTILLA_PRODUCTO, 'plantilla')
+TEMPLATE = TEMPLATE.replace('item-content-wrapper--active ', '')
+SITE = 'https://www.motosjulio.es'
+
+
+def render_product(p):
+    s = TEMPLATE
+    name = html.escape(p['nombre'])
+    cat_id = p['categoria']
+    first = re.sub(r'\s+', ' ', p['descripcion']).strip()
+    desc = html.escape((first[:152] + '…') if len(first) > 155 else first)
+    title = f'{name} | Motos Julio'
+    s = re.sub(r'<title>[^<]*</title>', f'<title>{title}</title>', s)
+    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)?title" content=")[^"]*', lambda m: m.group(1) + title, s)
+    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)?description" content=")[^"]*', lambda m: m.group(1) + desc, s)
+    s = re.sub(r'(<link rel="canonical" href=")[^"]*', lambda m: m.group(1) + f'{SITE}/{p["slug"]}', s)
+    s = re.sub(r'(<meta property="og:url" content=")[^"]*', lambda m: m.group(1) + f'{SITE}/{p["slug"]}', s)
+    first_img = p['imagenes'][0] if p['imagenes'][0].startswith('http') else f'{SITE}/{p["imagenes"][0]}'
+    s = re.sub(r'(<meta (?:name|property)="(?:twitter:|og:)image(?::url)?" content=")[^"]*', lambda m: m.group(1) + first_img, s)
+    ld = {'@context': 'https://schema.org', '@type': 'Product', 'name': p['nombre'],
+          'description': first, 'image': [u if u.startswith('http') else f'{SITE}/{u}' for u in p['imagenes']],
+          'category': CAT_NAMES.get(cat_id, ''), 'url': f'{SITE}/{p["slug"]}',
+          'offers': {'@type': 'Offer', 'price': f'{p["precio"]:.2f}', 'priceCurrency': 'EUR', 'itemCondition': 'https://schema.org/UsedCondition',
+                     'availability': 'https://schema.org/' + ('InStock' if p.get('estado', 'disponible') == 'disponible' else 'OutOfStock')}}
+    s = re.sub(r'<script type="application/ld\+json">.*?</script>', '', s, flags=re.S)
+    s = s.replace('</head>', '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + '</script></head>', 1)
+    # galería
+    s = replace_block(s, '<div class="product-content-layout__gallery', gallery_html(p, 1))
+    # textos
+    if cat_id in CAT_NAMES and cat_id != 'otros':
+        back = rel('/' + CAT_PAGE[cat_id] + '/', 1) if cat_id in CAT_PAGE else rel('/tienda/', 1) + '?categoria=' + cat_id
+        crumb = (f'<nav class="mj-breadcrumb" aria-label="Estás en"><a href="{rel("/tienda/", 1)}">Tienda</a><span>/</span>'
+                 f'<a href="{back}">{html.escape(CAT_NAMES[cat_id])}</a></nav>')
+    else:
+        crumb = f'<nav class="mj-breadcrumb" aria-label="Estás en"><a href="{rel("/tienda/", 1)}">Tienda</a></nav>'
+    s = re.sub(r'(<h1 class="block-product__title"[^>]*>).*?(</h1>)', lambda m: crumb + m.group(1) + name + m.group(2), s, count=1, flags=re.S)
+    sub = html.escape(p.get('subtitulo', ''))
+    s = re.sub(r'(<h2 class="block-product__subtitle"[^>]*>).*?(</h2>)', (lambda m: m.group(1) + sub + m.group(2)) if sub else '', s, count=1, flags=re.S)
+    b = badge_for(p)
+    price = fmt_price(p['precio']) + (f' <span class="mj-badge mj-badge--inline">{b}</span>' if b else '')
+    s = re.sub(r'(<span class="block-product__price[^"]*"[^>]*>).*?(</span>)', lambda m: m.group(1) + price + m.group(2), s, count=1, flags=re.S)
+    s = re.sub(r'(<div class="block-product__description[^"]*"[^>]*>).*?(</div>)', lambda m: m.group(1) + description_html(p['descripcion']) + m.group(2), s, count=1, flags=re.S)
+    s = s.replace('../plantilla/', f'../{p["slug"]}/')
+    return s
+
+
+for p in products:
+    write_page(p['slug'], render_product(p))
 
 # ---------- páginas legales (misma cabecera y pie que Contacto) ----------
 base = open(os.path.join(OUT, 'contacto', 'index.html'), encoding='utf-8').read()
@@ -338,6 +399,6 @@ css = open(os.path.join(SRC, 'site.css'), encoding='utf-8').read()
 open(os.path.join(OUT, 'assets', 'css', 'site.css'), 'w', encoding='utf-8').write(css)
 
 remote = sorted({u for u, v in local_cache.items() if v == u})
-print(f'Páginas: {len(PAGES)} | productos: {len(products)} | imágenes locales: {sum(1 for u,v in local_cache.items() if v!=u)} | remotas: {len(remote)}')
+print(f'Páginas: {len(PAGES) + len(products) + len(legal.PAGES)} | productos: {len(products)} | imágenes locales: {sum(1 for u,v in local_cache.items() if v!=u)} | remotas: {len(remote)}')
 for u in remote[:50]:
     print('  remota:', u[:120])
