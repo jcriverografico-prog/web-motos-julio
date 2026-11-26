@@ -29,11 +29,11 @@
   "productos": [
     {
       "slug": "quad-atv-polaris-trail-blazer",
-      "nombre": "Quad ATV Polaris Trail Blazer",
+      "nombre": "Quad ATV Polaris Trail Blazer 250cc",
       "subtitulo": "Nueva entrada",
-      "precio": null,
+      "precio": 3400,
       "categoria": "quads",
-      "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Polaris Trail Blazer.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Polaris Trail Blazer 250 cc.\n\nCaracterísticas destacadas:\n• Polaris Trail Blazer 250 cc.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
       "imagenes": [
         "assets/productos/quad-atv-polaris-trail-blazer/01.webp"
       ],
@@ -45,7 +45,7 @@
       "slug": "quad-atv-kymco-mxu-250cc-homologado-2-plazas",
       "nombre": "Quad ATV Kymco MXU 250cc - Homologado 2 Plazas",
       "subtitulo": "Nueva entrada",
-      "precio": null,
+      "precio": 3200,
       "categoria": "quads",
       "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Kymco MXU 250 cc homologado para 2 plazas.\n\nCaracterísticas destacadas:\n• Kymco MXU 250 cc.\n• Homologado para 2 plazas.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
       "imagenes": [
@@ -59,7 +59,7 @@
       "slug": "quad-atv-polaris-trail-boss-330cc",
       "nombre": "Quad ATV Polaris Trail Boss 330cc",
       "subtitulo": "Recién revisado y con garantía",
-      "precio": null,
+      "precio": 3600,
       "categoria": "quads",
       "descripcion": "¡Disponible en Motos Julio! Quad ATV Polaris Trail Boss 330 cc, recién revisado y con garantía.\n\nCaracterísticas destacadas:\n• Polaris Trail Boss 330 cc.\n• Recién revisado.\n• Con garantía.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
       "imagenes": [
@@ -73,7 +73,7 @@
       "slug": "quad-atv-polaris-sportsman-400cc-4x4",
       "nombre": "Quad ATV Polaris Sportsman 400cc 4x4",
       "subtitulo": "Para su puesta a punto y venta",
-      "precio": null,
+      "precio": 5200,
       "categoria": "quads",
       "descripcion": "¡Nueva entrada en Motos Julio! Quad ATV Polaris Sportsman 400 cc con tracción 4x4, para su puesta a punto y venta.\n\nCaracterísticas destacadas:\n• Polaris Sportsman 400 cc.\n• Tracción 4x4.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
       "imagenes": [
