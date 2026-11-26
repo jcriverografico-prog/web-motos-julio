@@ -12,4 +12,3 @@ Se publica en Hostinger por Git (y en GitHub Pages para pruebas).
 
 ## Pendiente
 - Rellenar titular y NIF en `_herramientas/legal.py` antes de publicar en motosjulio.es.
-- Descargar a local las fotos de los productos antiguos (ahora se cargan desde `cdn.zyrosite.com`). Hay que hacerlo antes de dar de baja el constructor de Hostinger.
