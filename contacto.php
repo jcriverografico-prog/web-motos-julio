@@ -16,13 +16,14 @@ $nombre    = limpio($_POST['nombre'] ?? '');
 $apellidos = limpio($_POST['apellidos'] ?? '');
 $email     = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $mensaje   = trim(strip_tags((string)($_POST['mensaje'] ?? '')));
+$privacidad = !empty($_POST['privacidad']);
 
-if ($nombre === '' || $apellidos === '' || !$email || $mensaje === '') {
+if ($nombre === '' || $apellidos === '' || !$email || $mensaje === '' || !$privacidad) {
     header('Location: ' . $volver . '?error=1'); exit;
 }
 
 $asunto  = 'Nuevo mensaje desde la web - ' . $nombre . ' ' . $apellidos;
-$cuerpo  = "Nombre: $nombre $apellidos\nCorreo: $email\n\nMensaje:\n$mensaje\n";
+$cuerpo  = "Nombre: $nombre $apellidos\nCorreo: $email\n\nMensaje:\n$mensaje\n\nAceptó la política de privacidad el " . date('d/m/Y H:i') . "\n";
 $cabeceras = [
     'From: Web Motos Julio <no-reply@motosjulio.es>',
     'Reply-To: ' . $email,

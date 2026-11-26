@@ -21,3 +21,73 @@ a.block-product__button{display:inline-flex;align-items:center;justify-content:c
 /* Sin JavaScript, todo visible */
 html:not(.mj-js) .transition,html:not(.mj-js) [data-animation-role]{opacity:1!important;transform:none!important;filter:none!important}
 .skeleton-loader{display:none!important}
+
+/* ---------- Tienda: filtros (mismo estilo que la tienda de Hostinger) ---------- */
+.mj-shop{width:100%}
+.mj-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 32px;margin:0 0 24px;font-family:Roboto,Inter,sans-serif}
+.mj-field{display:flex;align-items:center;gap:16px;font-size:16px;color:#0D1A10}
+.mj-field__label{white-space:nowrap}
+.mj-field--sort .mj-field__label{color:rgb(255,36,47)}
+.mj-select{position:relative;display:inline-block}
+.mj-select select{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;background:#fff;border:1px solid #0D1A10;border-radius:999px;padding:8px 44px 8px 20px;min-width:240px;cursor:pointer}
+.mj-field--sort .mj-select select{border-color:rgb(255,36,47);color:rgb(255,36,47)}
+.mj-select::after{content:"";position:absolute;right:20px;top:50%;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.mj-field--sort .mj-select::after{color:rgb(255,36,47)}
+.mj-select select:focus-visible{outline:2px solid rgb(255,36,47);outline-offset:2px}
+.mj-card[hidden],.mj-empty[hidden]{display:none!important}
+@media (max-width:920px){
+  .mj-toolbar{flex-direction:column}
+  .mj-field{justify-content:space-between;width:100%}
+  .mj-select{flex:0 0 55%}
+  .mj-select select{width:100%;min-width:0}
+}
+
+/* ---------- Formulario: consentimiento ---------- */
+.mj-consent{font-family:Inter,sans-serif;color:#fff;font-size:13px;line-height:1.45;margin:4px 0 16px}
+.mj-consent label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px}
+.mj-consent input{width:18px;height:18px;margin:1px 0 0;flex:0 0 auto;accent-color:rgb(255,36,47)}
+.mj-consent a{color:inherit;text-decoration:underline}
+.mj-consent p{margin:8px 0 0;opacity:.8;font-size:12px}
+
+/* ---------- Mapa bajo demanda (sin cookies hasta que se pulsa) ---------- */
+.mj-map{position:relative;background:#e9edf0}
+.mj-map:not(.mj-map--on) .grid-map__frame{visibility:hidden}
+.mj-map-consent{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;font:12px/1.35 Inter,sans-serif;color:#0D1A10}
+.mj-map-consent p{margin:0;max-width:280px}
+.mj-map-consent a{color:inherit}
+.mj-map-consent__btn{font:600 14px Inter,sans-serif;background:rgb(255,36,47);color:#fff;border:0;border-radius:4px;padding:10px 20px;cursor:pointer}
+.mj-map-consent__btn:hover{background:#0D1A10}
+.mj-map--on .mj-map-consent,.mj-map .grid-map__pin{display:none}
+.grid-map{position:relative}
+
+/* ---------- Barra legal bajo el pie ---------- */
+.mj-legal-bar{background:rgb(43,43,43);border-top:1px solid rgba(255,255,255,.12);font-family:Inter,sans-serif;font-size:13px;color:rgba(255,255,255,.75)}
+.mj-legal-bar__inner{max-width:1224px;margin:0 auto;padding:20px 16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+.mj-legal-bar p{margin:0}
+.mj-legal-bar nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+.mj-legal-bar a{color:inherit;text-decoration:none}
+.mj-legal-bar a:hover{color:rgb(255,36,47)}
+@media (max-width:920px){.mj-legal-bar__inner{flex-direction:column;align-items:center;text-align:center}.mj-legal-bar nav{justify-content:center}}
+
+/* ---------- Páginas legales ---------- */
+.mj-legal-page{display:block;padding:64px 16px 80px;background:#fff}
+.mj-legal-page__inner{max-width:800px;margin:0 auto;font-family:Inter,sans-serif;color:#0D1A10;font-size:16px;line-height:1.65}
+.mj-legal-page h1{font-size:40px;line-height:1.2;margin:0 0 8px}
+.mj-legal-page h2{font-size:20px;margin:40px 0 12px}
+.mj-legal-page p,.mj-legal-page ul{margin:0 0 12px}
+.mj-legal-page ul{padding-left:20px}
+.mj-legal-page a{color:rgb(255,36,47)}
+.mj-legal-updated{color:#6d7081;font-size:14px}
+@media (max-width:920px){.mj-legal-page{padding:40px 16px 56px}.mj-legal-page h1{font-size:30px}}
+
+/* ---------- Contacto: solo Miguelturra (Hellín cerrado) ---------- */
+@media (max-width:920px){
+  #z-nrvp .block-layout{display:flex!important;flex-direction:column;gap:4px;padding-bottom:32px;min-height:0!important;height:auto!important}
+  #z-nrvp .layout-element{height:auto!important;min-height:0!important;margin:0!important;grid-area:auto!important}
+  #z-nrvp .layout-element:has(#z6ZroU){order:1;margin-bottom:12px}
+  #z-nrvp .layout-element:has(#zAECWE){order:2}
+  #z-nrvp .layout-element:has(#zgkDWp){order:3;margin-bottom:12px}
+  #z-nrvp .layout-element:has(#zhu-kZ){order:4}
+  #z-nrvp .layout-element:has(#z6M5H3){order:5}
+  #z-nrvp .layout-element:has(#zCbui9){order:6}
+}

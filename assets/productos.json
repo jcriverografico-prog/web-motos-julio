@@ -5,7 +5,8 @@
   "price": 5900.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR/assets/04277b8e-daad-48db-9c3a-f7c6e9e3e80d.jpg",
-  "cat": "motos-y-quads"
+  "cat": "quads",
+  "order": 0
  },
  {
   "slug": "quad-deportivo-suzuki-ltz-400-cc-edicion-limitada-revisado-y-con-garantia",
@@ -13,7 +14,8 @@
   "price": 5800.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR/assets/bb794524-2108-460d-85b2-12d6eb07e38f.jpg",
-  "cat": "motos-y-quads"
+  "cat": "quads",
+  "order": 1
  },
  {
   "slug": "quad-suzuki-ltz-400-cc-deportivo-revisado-y-con-garantia",
@@ -21,7 +23,8 @@
   "price": 4300.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR/assets/e2d60e08-50ff-44b3-8d49-4d3478d53ea6.jpg",
-  "cat": "motos-y-quads"
+  "cat": "quads",
+  "order": 2
  },
  {
   "slug": "alquiler-de-remolque-plataforma-para-motos-quads-y-cargas",
@@ -29,7 +32,8 @@
   "price": 55.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR/assets/fa18377c-9fa4-4d81-9ea4-4bc6bb93e75e.jpg",
-  "cat": "otros"
+  "cat": "",
+  "order": 3
  },
  {
   "slug": "quad-atv-polaris-sportsman-600cc-twin-4x4-awd",
@@ -37,7 +41,8 @@
   "price": 5600.0,
   "stock": false,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR/assets/1e77c837-9ee1-4bc3-a8a3-4d1235ae8869.jpg",
-  "cat": "motos-y-quads"
+  "cat": "quads",
+  "order": 4
  },
  {
   "slug": "adly-300",
@@ -45,7 +50,8 @@
   "price": 2500.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1697800437226-0.jpg",
-  "cat": "motos-y-quads"
+  "cat": "quads",
+  "order": 5
  },
  {
   "slug": "bicicleta-biocycle-de-29-pulgadas",
@@ -53,7 +59,8 @@
   "price": 850.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422025399-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 6
  },
  {
   "slug": "bicicleta-biocycle-de-29-pulgadas2",
@@ -61,7 +68,8 @@
   "price": 580.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422502559-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 7
  },
  {
   "slug": "bicicleta-biocycle-de-29-pulgadas1",
@@ -69,7 +77,8 @@
   "price": 450.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698421766678-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 8
  },
  {
   "slug": "bicicleta-biocycle-de-29-pulgadas-",
@@ -77,7 +86,8 @@
   "price": 450.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422324661-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 9
  },
  {
   "slug": "bicicleta-bmx-de-20-pulgadas",
@@ -85,7 +95,8 @@
   "price": 250.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422151701-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 10
  },
  {
   "slug": "bicicleta-de-24-pulgadas-",
@@ -93,7 +104,8 @@
   "price": 260.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698423569483-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 11
  },
  {
   "slug": "bicicleta-de-paseo-electrica-",
@@ -101,7 +113,8 @@
   "price": 1150.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422892899-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 12
  },
  {
   "slug": "bicicletas-de-16-pulgadas",
@@ -109,7 +122,8 @@
   "price": 135.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698419184618-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 13
  },
  {
   "slug": "bicicletas-de-20-pulgadas",
@@ -117,7 +131,8 @@
   "price": 145.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698422628463-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 14
  },
  {
   "slug": "bicicletas-de-24-pulgadas",
@@ -125,7 +140,8 @@
   "price": 199.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1698423129431-0.jpg",
-  "cat": "bicicletas"
+  "cat": "bicicletas",
+  "order": 15
  },
  {
   "slug": "vespa-plurimatic-125",
@@ -133,6 +149,7 @@
   "price": 2200.0,
   "stock": true,
   "image": "https://cdn.zyrosite.com/cdn-ecommerce/store_01HBV5NSDGD8SX55D7QK9E2DSR%2Fassets%2F1697797827305-0.jpg",
-  "cat": "motos-y-quads"
+  "cat": "motos",
+  "order": 16
  }
 ]

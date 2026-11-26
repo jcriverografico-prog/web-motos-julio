@@ -16,6 +16,56 @@
     anim.forEach(activate);
   }
 
+
+  // Tienda: filtro por categoría y orden
+  document.querySelectorAll('.mj-shop').forEach(function (shop) {
+    var grid = shop.querySelector('.mj-grid');
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.mj-card'));
+    var catSel = shop.querySelector('[data-mj-cat]');
+    var sortSel = shop.querySelector('[data-mj-sort]');
+    var count = shop.querySelector('[data-mj-count]');
+    var empty = shop.querySelector('.mj-empty');
+    var params = new URLSearchParams(location.search);
+    if (params.get('categoria') !== null && catSel.querySelector('option[value="' + params.get('categoria') + '"]')) catSel.value = params.get('categoria');
+    if (params.get('orden') && sortSel.querySelector('option[value="' + params.get('orden') + '"]')) sortSel.value = params.get('orden');
+    function apply(push) {
+      var cats = catSel.value ? catSel.value.split(',') : null;
+      var n = 0;
+      cards.forEach(function (c) { var ok = !cats || cats.indexOf(c.dataset.cat) > -1; c.hidden = !ok; if (ok) n++; });
+      var s = sortSel.value;
+      cards.slice().sort(function (a, b) {
+        if (s === 'precio-asc') return a.dataset.price - b.dataset.price;
+        if (s === 'precio-desc') return b.dataset.price - a.dataset.price;
+        if (s === 'nombre') return a.dataset.name.localeCompare(b.dataset.name, 'es');
+        return a.dataset.order - b.dataset.order;
+      }).forEach(function (c) { grid.appendChild(c); });
+      count.textContent = n + (n === 1 ? ' producto' : ' productos');
+      empty.hidden = n > 0;
+      grid.hidden = n === 0;
+      if (push && history.replaceState) {
+        var p = new URLSearchParams(location.search);
+        if (catSel.value !== shop.dataset.default) p.set('categoria', catSel.value); else p.delete('categoria');
+        if (s !== 'reciente') p.set('orden', s); else p.delete('orden');
+        var q = p.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+      }
+    }
+    catSel.addEventListener('change', function () { apply(true); });
+    sortSel.addEventListener('change', function () { apply(true); });
+    apply(false);
+  });
+
+  // Mapa de Google: solo se carga al pulsar "Ver mapa"
+  document.querySelectorAll('.mj-map').forEach(function (box) {
+    var btn = box.parentNode.querySelector('.mj-map-consent__btn') || box.querySelector('.mj-map-consent__btn');
+    var frame = box.querySelector('iframe[data-src]');
+    if (!btn || !frame) return;
+    btn.addEventListener('click', function () {
+      frame.src = frame.getAttribute('data-src');
+      box.classList.add('mj-map--on');
+    });
+  });
+
   // Menú móvil
   document.querySelectorAll('.burger').forEach(function (btn) {
     btn.addEventListener('click', function () {
