@@ -5,6 +5,7 @@
   estado SLUG ESTADO                      disponible | reservado | vendido | agotado
   baja SLUG                               Lo quita de la web (se conserva en el registro).
   fijar SLUG / soltar SLUG                Fija (o suelta) un producto al principio de la tienda.
+  registrar SLUG [SLUG…]                  Apunta en el contador productos ya publicados (sin crear ficha).
   contador                                Productos subidos, lotes de 30 y importe.
   cobrado N                               Marca N lotes como cobrados.
   lista                                   Lista el catálogo.
@@ -209,6 +210,28 @@ def fijar(slug, valor):
     print(f'{slug}: {"fijado" if valor else "sin fijar"}')
 
 
+def registrar(slugs):
+    data = cargar()
+    por_slug = {p['slug']: p for p in data['productos']}
+    ya = {r['slug'] for r in leer_registro()}
+    for slug in slugs:
+        if slug not in por_slug:
+            fallo(f'no existe el producto {slug}')
+        if slug in ya:
+            fallo(f'{slug} ya está en el registro')
+    nuevo = not os.path.exists(REGISTRO)
+    hoy = datetime.date.today().isoformat()
+    with open(REGISTRO, 'a', encoding='utf-8', newline='') as fh:
+        w = csv.writer(fh)
+        if nuevo:
+            w.writerow(['fecha', 'slug', 'nombre', 'categoria', 'precio', 'fotos'])
+        for slug in slugs:
+            p = por_slug[slug]
+            w.writerow([p.get('alta') or hoy, slug, p['nombre'], p['categoria'], p['precio'] if p['precio'] is not None else 'consultar', len(p['imagenes'])])
+            print(f'Registrado: {p["nombre"]}')
+    contador()
+
+
 def contador():
     filas = leer_registro()
     total = len(filas)
@@ -256,6 +279,8 @@ if __name__ == '__main__':
         cambiar_estado(a[1], 'baja')
     elif cmd in ('fijar', 'soltar') and len(a) == 2:
         fijar(a[1], cmd == 'fijar')
+    elif cmd == 'registrar' and len(a) >= 2:
+        registrar(a[1:])
     elif cmd == 'contador':
         contador()
     elif cmd == 'cobrado' and len(a) == 2:
