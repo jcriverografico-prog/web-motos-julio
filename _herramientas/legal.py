@@ -2,7 +2,7 @@
 # Rellena los datos del titular en TITULAR antes de publicar en el dominio definitivo.
 
 TITULAR = {
-    'nombre': '[NOMBRE Y APELLIDOS O RAZÓN SOCIAL DEL TITULAR]',
+    'nombre': 'Julio López Sánchez',
     'nif': '[NIF/CIF]',
     'comercial': 'Motos Julio',
     'domicilio': 'C/ San Juan de Ávila, 31, Bajo, 13170 Miguelturra (Ciudad Real), España',

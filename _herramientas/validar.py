@@ -101,6 +101,10 @@ def validar_web(out, data):
     if n != len(activos):
         errores.append(f'web: la tienda muestra {n} productos y el catálogo tiene {len(activos)}')
     # enlaces e imágenes locales rotos en todas las páginas
+    for lp in ('aviso-legal', 'politica-de-privacidad'):
+        t = open(os.path.join(out, lp, 'index.html'), encoding='utf-8').read()
+        for m in sorted(set(re.findall(r'\[(?:NIF|NOMBRE)[^\]]*\]', t))):
+            print(f'AVISO   web: {lp} tiene sin rellenar {m} (obligatorio antes de publicar en motosjulio.es)')
     for dirpath, _, files in os.walk(out):
         for fn in files:
             if not fn.endswith('.html'):
