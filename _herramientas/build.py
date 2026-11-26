@@ -100,8 +100,19 @@ LISTS = {  # página -> categoría que muestra por defecto ('' = todas)
 CAT_PAGE = {'bicicletas': 'bicicletas', 'patines': 'patines', 'desguace': 'desguace-de-motos'}
 
 
-def fmt_price(v):
-    return 'Consultar precio' if v is None else '€' + f'{v:.2f}'
+def fmt_price(v, largo=False):
+    if v is None:
+        return 'Consultar precio'
+    if isinstance(v, dict):  # horquilla {"desde": 280, "hasta": 850}
+        a, b = '€' + f'{v["desde"]:.2f}', '€' + f'{v["hasta"]:.2f}'
+        return f'Desde {a} hasta {b}' if largo else f'{a} – {b}'
+    return '€' + f'{v:.2f}'
+
+
+def price_key(v):
+    if v is None:
+        return ''
+    return v['desde'] if isinstance(v, dict) else v
 
 
 def img_url(path, depth, thumb=False):
@@ -137,7 +148,7 @@ def product_grid(default, depth):
         b = badge_for(p)
         badge = f'<span class="mj-badge{" mj-badge--promo" if b and b == p.get("etiqueta") else ""}">{html.escape(b)}</span>' if b else ''
         cards.append(
-            f'<a class="mj-card{" mj-card--fijado" if p.get("fijado") else ""}" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["categoria"]}" data-price="{"" if p["precio"] is None else p["precio"]}" '
+            f'<a class="mj-card{" mj-card--fijado" if p.get("fijado") else ""}" href="{rel("/" + p["slug"] + "/", depth)}" data-cat="{p["categoria"]}" data-price="{price_key(p["precio"])}" '
             f'data-order="{p["order"]}" data-pinned="{1 if p.get("fijado") else 0}" data-name="{html.escape(p["nombre"].lower())}"{"" if show else " hidden"}>'
             f'<span class="mj-card__img">{badge}<img src="{img_url(p["imagenes"][0], depth, True)}" alt="{html.escape(p["nombre"])}" loading="lazy"></span>'
             f'<h6 class="mj-card__title">{html.escape(p["nombre"])}</h6>'
@@ -364,7 +375,9 @@ def render_product(p):
           'category': CAT_NAMES.get(cat_id, ''), 'url': f'{SITE}/{p["slug"]}',
           'offers': {'@type': 'Offer', 'priceCurrency': 'EUR', 'itemCondition': 'https://schema.org/UsedCondition',
                      'availability': 'https://schema.org/' + ('InStock' if p.get('estado', 'disponible') == 'disponible' else 'OutOfStock')}}
-    if p['precio'] is not None:
+    if isinstance(p['precio'], dict):
+        ld['offers'].update({'@type': 'AggregateOffer', 'lowPrice': f'{p["precio"]["desde"]:.2f}', 'highPrice': f'{p["precio"]["hasta"]:.2f}'})
+    elif p['precio'] is not None:
         ld['offers']['price'] = f'{p["precio"]:.2f}'
     s = re.sub(r'<script type="application/ld\+json">.*?</script>', '', s, flags=re.S)
     s = s.replace('</head>', '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + '</script></head>', 1)
@@ -381,7 +394,7 @@ def render_product(p):
     sub = html.escape(p.get('subtitulo', ''))
     s = re.sub(r'(<h2 class="block-product__subtitle"[^>]*>).*?(</h2>)', (lambda m: m.group(1) + sub + m.group(2)) if sub else '', s, count=1, flags=re.S)
     b = badge_for(p)
-    price = fmt_price(p['precio']) + (f' <span class="mj-badge mj-badge--inline{" mj-badge--promo" if b == p.get("etiqueta") else ""}">{html.escape(b)}</span>' if b else '')
+    price = fmt_price(p['precio'], largo=True) + (f' <span class="mj-badge mj-badge--inline{" mj-badge--promo" if b == p.get("etiqueta") else ""}">{html.escape(b)}</span>' if b else '')
     s = re.sub(r'(<span class="block-product__price[^"]*"[^>]*>).*?(</span>)', lambda m: m.group(1) + price + m.group(2), s, count=1, flags=re.S)
     s = re.sub(r'(<div class="block-product__description[^"]*"[^>]*>).*?(</div>)', lambda m: m.group(1) + description_html(p['descripcion']) + m.group(2), s, count=1, flags=re.S)
     s = s.replace('../plantilla/', f'../{p["slug"]}/')

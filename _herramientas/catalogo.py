@@ -5,6 +5,7 @@
   estado SLUG ESTADO                      disponible | reservado | vendido | agotado
   baja SLUG                               Lo quita de la web (se conserva en el registro).
   fijar SLUG / soltar SLUG                Fija (o suelta) un producto al principio de la tienda.
+  fotos SLUG RUTA [RUTA…] [--simular]     Añade fotos a un producto existente (no cuenta como producto nuevo).
   registrar SLUG [SLUG…]                  Apunta en el contador productos ya publicados (sin crear ficha).
   contador                                Productos subidos, lotes de 30 y importe.
   cobrado N                               Marca N lotes como cobrados.
@@ -22,6 +23,7 @@ FICHA.json (una por producto):
   "etiqueta": "Black Friday",                        (opcional: cinta sobre la foto)
   "fijado": true                                     (opcional: siempre el primero de la tienda)
   Precio desconocido a propósito: "precio": "consultar"  -> «Consultar precio»
+  Horquilla de precios: "precio": {"desde": 280, "hasta": 850}  (o "280-850") -> «Desde €280.00 hasta €850.00»
 }
 """
 import csv, datetime, json, os, re, sys, unicodedata
@@ -94,6 +96,24 @@ def leer_precio(v):
     return float(t)
 
 
+def leer_precio_campo(v):
+    """número | "consultar" | "280-850" | {"desde": 280, "hasta": 850}"""
+    if str(v).lower() == 'consultar':
+        return None
+    if isinstance(v, dict):
+        d, h = leer_precio(v['desde']), leer_precio(v['hasta'])
+    elif isinstance(v, str) and re.fullmatch(r'\s*[\d.,€ ]+\s*-\s*[\d.,€ ]+\s*', v):
+        d, h = (leer_precio(x) for x in v.split('-'))
+    else:
+        n = leer_precio(v)
+        if n <= 0:
+            raise ValueError
+        return round(n, 2)
+    if not (0 < d < h):
+        raise ValueError
+    return {'desde': round(d, 2), 'hasta': round(h, 2)}
+
+
 def fallo(msg):
     print('ERROR  ', msg)
     sys.exit(1)
@@ -110,11 +130,9 @@ def alta(ficha_path, simular=False, forzar=False):
     if errores:
         fallo('; '.join(errores))
     try:
-        precio = None if str(f['precio']).lower() == 'consultar' else leer_precio(f['precio'])
-    except ValueError:
+        precio = leer_precio_campo(f['precio'])
+    except (ValueError, KeyError, TypeError):
         fallo(f'precio no válido: {f["precio"]!r}')
-    if precio is not None and precio <= 0:
-        fallo('el precio debe ser mayor que 0')
     if f['categoria'] not in cats:
         fallo(f'categoría «{f["categoria"]}» no existe ({", ".join(sorted(cats))})')
     estado = f.get('estado', 'disponible')
@@ -152,7 +170,7 @@ def alta(ficha_path, simular=False, forzar=False):
     rutas = [f'assets/productos/{slug}/{i + 1:02d}.webp' for i in range(len(f['imagenes']))]
     producto = {
         'slug': slug, 'nombre': f['nombre'].strip(), 'subtitulo': f.get('subtitulo', '').strip(),
-        'precio': None if precio is None else round(precio, 2), 'categoria': f['categoria'], 'descripcion': f['descripcion'].strip(),
+        'precio': precio, 'categoria': f['categoria'], 'descripcion': f['descripcion'].strip(),
         'imagenes': rutas, 'estado': estado, 'origen': 'nuevo',
         'alta': datetime.date.today().isoformat(),
     }
@@ -180,7 +198,8 @@ def alta(ficha_path, simular=False, forzar=False):
         w = csv.writer(fh)
         if nuevo:
             w.writerow(['fecha', 'slug', 'nombre', 'categoria', 'precio', 'fotos'])
-        w.writerow([producto['alta'], slug, producto['nombre'], producto['categoria'], producto['precio'], len(rutas)])
+        v = producto['precio']
+        w.writerow([producto['alta'], slug, producto['nombre'], producto['categoria'], 'consultar' if v is None else (f'{v["desde"]}-{v["hasta"]}' if isinstance(v, dict) else v), len(rutas)])
     print(f'\nAlta guardada: {slug}')
     contador()
 
@@ -210,6 +229,44 @@ def fijar(slug, valor):
     print(f'{slug}: {"fijado" if valor else "sin fijar"}')
 
 
+def guardar_foto(ruta, destino):
+    img = ImageOps.exif_transpose(Image.open(ruta)).convert('RGB')
+    os.makedirs(os.path.join(ROOT, os.path.dirname(destino)), exist_ok=True)
+    g = img.copy(); g.thumbnail((MAX_LADO, MAX_LADO), Image.LANCZOS)
+    g.save(os.path.join(ROOT, destino), 'WEBP', quality=CALIDAD, method=6)
+    m = img.copy(); m.thumbnail((MINI, MINI * 2), Image.LANCZOS)
+    m.save(os.path.join(ROOT, destino.replace('.webp', '-600.webp')), 'WEBP', quality=78, method=6)
+
+
+def anadir_fotos(slug, rutas, simular=False):
+    data = cargar()
+    p = next((p for p in data['productos'] if p['slug'] == slug), None)
+    if not p:
+        fallo(f'no existe el producto {slug}')
+    existentes = hashes_existentes()
+    for ruta in rutas:
+        if not os.path.isfile(ruta):
+            fallo(f'no encuentro la imagen {ruta}')
+        img = Image.open(ruta)
+        w, h = ImageOps.exif_transpose(img).size
+        if min(w, h) < 500:
+            fallo(f'{os.path.basename(ruta)} es demasiado pequeña ({w}×{h})')
+        hsh = ahash(img)
+        for s2, h2 in existentes:
+            if distancia(hsh, h2) <= 6:
+                fallo(f'{os.path.basename(ruta)} se parece mucho a una foto de «{s2}»')
+    n = len(p['imagenes'])
+    nuevas = [f'assets/productos/{slug}/{n + i + 1:02d}.webp' for i in range(len(rutas))]
+    print(f'{slug}: {n} fotos -> {n + len(nuevas)}')
+    if simular:
+        print('(simulación: no se ha guardado nada)')
+        return
+    for ruta, destino in zip(rutas, nuevas):
+        guardar_foto(ruta, destino)
+    p['imagenes'] += nuevas
+    guardar(data)
+
+
 def registrar(slugs):
     data = cargar()
     por_slug = {p['slug']: p for p in data['productos']}
@@ -227,7 +284,8 @@ def registrar(slugs):
             w.writerow(['fecha', 'slug', 'nombre', 'categoria', 'precio', 'fotos'])
         for slug in slugs:
             p = por_slug[slug]
-            w.writerow([p.get('alta') or hoy, slug, p['nombre'], p['categoria'], p['precio'] if p['precio'] is not None else 'consultar', len(p['imagenes'])])
+            v = p['precio']
+            w.writerow([p.get('alta') or hoy, slug, p['nombre'], p['categoria'], 'consultar' if v is None else (f'{v["desde"]}-{v["hasta"]}' if isinstance(v, dict) else v), len(p['imagenes'])])
             print(f'Registrado: {p["nombre"]}')
     contador()
 
@@ -262,7 +320,8 @@ def cobrado(n):
 
 def lista():
     for p in cargar()['productos']:
-        pr = 'consultar' if p['precio'] is None else f'{p["precio"]:.2f} €'
+        v = p['precio']
+        pr = 'consultar' if v is None else (f'{v["desde"]:.0f}-{v["hasta"]:.0f} €' if isinstance(v, dict) else f'{v:.2f} €')
         print(f'{"📌 " if p.get("fijado") else "   "}{p["estado"]:<11} {p["categoria"]:<11} {pr:>12}  {p["slug"]}')
 
 
@@ -279,6 +338,8 @@ if __name__ == '__main__':
         cambiar_estado(a[1], 'baja')
     elif cmd in ('fijar', 'soltar') and len(a) == 2:
         fijar(a[1], cmd == 'fijar')
+    elif cmd == 'fotos' and len(a) >= 3:
+        anadir_fotos(a[1], [x for x in a[2:] if x != '--simular'], '--simular' in a)
     elif cmd == 'registrar' and len(a) >= 2:
         registrar(a[1:])
     elif cmd == 'contador':

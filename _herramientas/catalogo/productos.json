@@ -28,14 +28,74 @@
   ],
   "productos": [
     {
+      "slug": "patinete-electrico-mascooter",
+      "nombre": "Patinete eléctrico Mascooter",
+      "subtitulo": "",
+      "precio": {
+        "desde": 280.0,
+        "hasta": 850.0
+      },
+      "categoria": "patines",
+      "descripcion": "¡Disponible en Motos Julio! Patinete eléctrico Mascooter.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/patinete-electrico-mascooter/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26",
+      "etiqueta": "Black Friday"
+    },
+    {
+      "slug": "patinete-electrico-zwheel-zlion-pro",
+      "nombre": "Patinete eléctrico Zwheel Zlion Pro",
+      "subtitulo": "Modelo con ruedas de carretera",
+      "precio": {
+        "desde": 280.0,
+        "hasta": 850.0
+      },
+      "categoria": "patines",
+      "descripcion": "¡Disponible en Motos Julio! Patinete eléctrico Zwheel Zlion Pro.\n\nCaracterísticas destacadas:\n• Ruedas de carretera.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/patinete-electrico-zwheel-zlion-pro/01.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26",
+      "etiqueta": "Black Friday"
+    },
+    {
+      "slug": "patinete-electrico-zwheel-zcougar-duo",
+      "nombre": "Patinete eléctrico Zwheel Zcougar Duo",
+      "subtitulo": "Patinete de alta gama con ruedas de tacos",
+      "precio": {
+        "desde": 280.0,
+        "hasta": 850.0
+      },
+      "categoria": "patines",
+      "descripcion": "¡Disponible en Motos Julio! Patinete eléctrico de alta gama Zwheel Zcougar Duo.\n\nCaracterísticas destacadas:\n• Ruedas de tacos.\n• Opción de 2 motores o 1 motor.\n\n¿Más información o quieres concertar una visita?\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlo a nuestra tienda de Miguelturra.",
+      "imagenes": [
+        "assets/productos/patinete-electrico-zwheel-zcougar-duo/01.webp",
+        "assets/productos/patinete-electrico-zwheel-zcougar-duo/02.webp"
+      ],
+      "estado": "disponible",
+      "origen": "nuevo",
+      "alta": "2026-11-26",
+      "etiqueta": "Black Friday"
+    },
+    {
       "slug": "black-friday-ofertas-en-patinetes-electricos",
       "nombre": "Black Friday: ofertas en patinetes eléctricos",
-      "subtitulo": "",
-      "precio": null,
+      "subtitulo": "Gran gama de patinetes en stock",
+      "precio": {
+        "desde": 280.0,
+        "hasta": 850.0
+      },
       "categoria": "patines",
-      "descripcion": "¡Black Friday en Motos Julio! Ofertas en patinetes eléctricos.\n\nPregunta por los modelos disponibles y sus precios.\n¿Más información? Llámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlos a nuestra tienda de Miguelturra.",
+      "descripcion": "¡Black Friday en Motos Julio! Ofertas en patinetes eléctricos.\n\nGran gama de patinetes en stock, desde 280 € hasta 850 € (gama alta).\nOfertas especiales por la compra de cualquier patinete en stock.\n\nPregunta por los modelos disponibles y sus precios.\nLlámanos o escríbenos por WhatsApp al 607 749 877, o ven a verlos a nuestra tienda de Miguelturra.",
       "imagenes": [
-        "assets/productos/black-friday-ofertas-en-patinetes-electricos/01.webp"
+        "assets/productos/black-friday-ofertas-en-patinetes-electricos/01.webp",
+        "assets/productos/black-friday-ofertas-en-patinetes-electricos/02.webp",
+        "assets/productos/black-friday-ofertas-en-patinetes-electricos/03.webp"
       ],
       "estado": "disponible",
       "origen": "hostinger",

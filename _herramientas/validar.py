@@ -35,6 +35,10 @@ def validar_catalogo():
         vistos.add(p['slug'])
         if p['precio'] is None:
             avisos.append(f'{ref}: sin precio (se mostrará «Consultar precio»)')
+        elif isinstance(p['precio'], dict):
+            d, h = p['precio'].get('desde'), p['precio'].get('hasta')
+            if not all(isinstance(x, (int, float)) and x > 0 for x in (d, h)) or d >= h:
+                errores.append(f'{ref}: horquilla de precio no válida ({p["precio"]!r}); «desde» debe ser menor que «hasta»')
         elif not isinstance(p['precio'], (int, float)) or p['precio'] <= 0:
             errores.append(f'{ref}: precio no válido ({p["precio"]!r})')
         elif p['precio'] > 50000:
@@ -70,7 +74,7 @@ def validar_catalogo():
     for p in data['productos']:
         if p.get('estado') == 'baja':
             continue
-        k = (p.get('nombre', '').lower().strip(), p.get('precio'))
+        k = (p.get('nombre', '').lower().strip(), json.dumps(p.get('precio'), sort_keys=True))
         if k in clave:
             avisos.append(f'{p.get("slug")}: mismo nombre y precio que «{clave[k]}» (¿duplicado?)')
         clave[k] = p.get('slug')
@@ -88,7 +92,9 @@ def validar_web(out, data):
         s = open(f, encoding='utf-8').read()
         if 'tel:+34607749877' not in s:
             errores.append(f'web: la ficha de {p["slug"]} no tiene botón de llamada')
-        if (f'{p["precio"]:.2f}' if p['precio'] is not None else 'Consultar precio') not in s:
+        esperado = ('Consultar precio' if p['precio'] is None else
+                    f'{p["precio"]["desde"]:.2f}' if isinstance(p['precio'], dict) else f'{p["precio"]:.2f}')
+        if esperado not in s:
             errores.append(f'web: la ficha de {p["slug"]} no muestra el precio')
         og = re.search(r'<meta[^>]*property="og:url"[^>]*content="([^"]+)"', s) or re.search(r'<meta[^>]*content="([^"]+)"[^>]*property="og:url"', s)
         if not og or not og.group(1).endswith('/' + p['slug']):
